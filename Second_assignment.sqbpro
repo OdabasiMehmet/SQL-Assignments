@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/mehme/Desktop/ITF-11/SQL/Databases/chinook.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3862"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainalbums"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="albums" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="61"/><column index="2" value="300"/><column index="3" value="59"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="Second Assignment">-- Questions:
+-- 1.How many tracks does each album have? Your solution should include Album id and its number of tracks 
+-- sorted from highest to lowest.
+SELECT AlbumId,count (name) AS &quot;Number of tracks&quot;
+FROM tracks
+GROUP BY AlbumId
+ORDER BY count(name) DESC;
+
+-- 2.Find the album title of the tracks. Your solution should include track name and its album title.
+SELECT tracks.name,albums.Title
+FROM tracks
+INNER JOIN albums
+ON tracks.AlbumId = albums.AlbumId;
+
+-- 3.Find the minimum duration of the track in each album. Your solution should include album id, album 
+-- title and duration of the track sorted from highest to lowest.
+SELECT albums.AlbumId,albums.Title, MIN (tracks.Milliseconds) as &quot;Minimum Duration&quot;
+FROM tracks
+LEFT JOIN albums
+ON tracks.AlbumId = albums.AlbumId
+GROUP BY albums.AlbumId
+ORDER BY tracks.Milliseconds DESC;
+
+-- 4.Find the total duration of each album. Your solution should include album id, album title and its 
+-- total duration sorted from highest to lowest.
+SELECT albums.AlbumId,albums.Title,SUM (tracks.Milliseconds)as &quot;Total Duration&quot;
+FROM albums
+INNER JOIN tracks
+ON tracks.AlbumId = albums.AlbumId
+GROUP BY albums.AlbumId
+ORDER BY albums.AlbumId DESC;
+
+-- 5.Based on the previous question, find the albums whose total duration is higher than 70 minutes. 
+-- Your solution should include album title and total duration.
+SELECT albums.Title,SUM (tracks.Milliseconds)as &quot;Total Duration&quot;
+FROM albums
+INNER JOIN tracks
+ON tracks.AlbumId = albums.AlbumId
+WHERE tracks.Milliseconds &gt; 4200000
+GROUP BY albums.AlbumId
+ORDER BY albums.AlbumId DESC;</sql><current_tab id="0"/></tab_sql></sqlb_project>
