@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/mehme/Desktop/ITF-11/SQL/Databases/bookstore.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3281"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,7:mainauthors"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="authors" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="71"/><column index="2" value="126"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="book_types" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="66"/><column index="2" value="86"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="books" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="67"/><column index="3" value="86"/><column index="4" value="80"/><column index="5" value="95"/><column index="6" value="49"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="publishers" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="95"/><column index="2" value="125"/><column index="3" value="68"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">/*1) Tüm kitap isimlerini yazar isimleri ile birlikte getiren bir sorgu yazınız?*/
+SELECT b.book_name,a.author_name
+FROM books b
+INNER JOIN authors a
+ON b.author_id = a.author_id;
+
+--2) Tüm kitap isimlerini yayınevleri ile birlikte getiren bir sorgu yazınız
+SELECT b.book_name,p.publisher_name
+FROM books b
+INNER JOIN publishers p
+ON b.publisher_id = p.publisher_id;
+
+/*3) Tüm yayınevleri tarafından basılan kitapların isimlerini yayınevleri
+ ile birlikte getiren bir sorgu yazınız?*/
+ SELECT P.publisher_name, b.book_name
+ FROM publishers p
+ INNER JOIN books b
+ ON p.publisher_id = b.publisher_id;
+ 
+ /*4) 'Anı' türündeki tüm kitapların isimlerini getiren bir sorgu yazınız?*/
+ SELECT DISTINCT b.book_name,bt.book_type
+ FROM books b
+ INNER JOIN book_types bt
+ ON b.book_type = bt.type_id
+ WHERE bt.book_type = 'Anı';
+ 
+ /*5) 'Büyük Doğu Yayınları' na ait tüm kitapların isimlerini getiren bir sorgu  yazınız?*/
+ SELECT p.publisher_name, b.book_name
+ FROM publishers p
+ INNER JOIN books b
+ ON p.publisher_id = b.publisher_id
+ WHERE p.publisher_name = 'Büyük Doğu Yayınları';
+
+ /*6) 'Hikaye' türünde kitap yazan yazarların isimlerini getiren bir sorgu yazınız?*/
+ SELECT a.author_name,bt.book_type
+ FROM authors a
+ INNER JOIN books b
+ ON a.author_id = b.author_id
+ INNER JOIN book_types bt
+ ON b.book_type = bt.type_id
+ WHERE 
+ bt.book_type = 'Hikaye';
+ 
+/*7) 'Necip Fazıl Kısakürek'e ait kitapların türlerini getiren bir sorgu yazını?*/
+
+SELECT a.author_name, b.book_name, bt.book_type
+FROM authors a
+INNER JOIN books b
+ON a.author_id = b.author_id
+INNER JOIN book_types bt
+ON b.book_type=bt.type_id
+WHERE a.author_name = 'Necip Fazıl Kısakürek';
+
+/*8) 'Hikaye' VEYA 'Şiir' türünde kitap yazan yazarların isimlerini getiren bir sorgu yazınız?*/
+
+SELECT a.author_name, bt.book_type
+FROM authors a
+INNER JOIN books b
+ON a.author_id = b.author_id
+INNER JOIN book_types bt
+ON  b.book_type=bt.type_id
+WHERE bt.book_type IN ('Hikaye','Şiir');
+
+/*9) En pahalı kitabın türünü getiren bir sorgu yazınız?*/
+SELECT b.book_name,bt.book_type, MAX(b.price) AS 'Most Expensive'
+FROM books b
+INNER JOIN book_types bt
+ON b.book_type = bt.type_id;
+
+--10) 'TR' dışında diğer ülkelerde basılan kitapların isimlerini, 
+--yazarlarını, yayınevlerini ve
+ --fiyatlarını getiren bir sorgu yazınız?
+SELECT b.book_name, a.author_name,p.publisher_name, b.price
+FROM books b
+INNER JOIN authors a
+ON b.author_id = a.author_id
+INNER JOIN publishers p
+ON b.publisher_id = p.publisher_id
+WHERE NOT country = 'TR';
+
+/*11) 'Hikaye' türünde yazılmış olan en ucuz kitabın
+ yayınevini getiren bir sorgu yazınız?*/
+ 
+ SELECT bt.book_type, b.book_name, MIN (b.price) AS 'Cheapest Book'
+ FROM books b
+ INNER JOIN book_types bt
+ ON b.book_type = bt.type_id
+ INNER JOIN publishers p
+ ON b.publisher_id = p.publisher_id;
+ 
+ /*12) 'Can Yayınları' tarafından basılan en ucuz kitabın yazarının adını 
+ getiren bir sorgu yazınız?*/--
+ SELECT bt.book_type, b.book_name, MIN (b.price) AS 'Cheapest Book'
+ FROM books b
+ INNER JOIN book_types bt
+ ON b.book_type = bt.type_id
+ INNER JOIN publishers p
+ ON b.publisher_id = p.publisher_id
+ WHERE p.publisher_name = 'Can Yayınları';
+ 
+
+
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
